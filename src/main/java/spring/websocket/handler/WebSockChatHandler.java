@@ -1,12 +1,16 @@
-package org.springinincheon.chat.handler;
+package spring.websocket.handler;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import spring.websocket.dto.ChatMessage;
+import spring.websocket.dto.ChatRoom;
+import spring.websocket.service.ChatService;
 
 import java.io.IOException;
 
@@ -20,25 +24,16 @@ import java.io.IOException;
  *   2) afterConnectionClosed() : 웹소켓 연결이 종료된 뒤, 서버에서 실행해야할 작업을 정의하는 메소드
  *   3) afterConnectionEstablished() : 연결 성공 후 처리해야할 작업
  *
- * <p>
- *
- * <pre>
- * 개정이력(Modification Information)·
- * 수정일   수정자    수정내용
- * ------------------------------------
- *
- * </pre>
- *
- * @author Seobi
- * @since 2021. 9. 18.
- * @version 0.0.1
- * @see
  *
  */
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class WebSockChatHandler extends TextWebSocketHandler {
+
+    private final ObjectMapper objectMapper;
+    private final ChatService chatService;
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
@@ -46,7 +41,11 @@ public class WebSockChatHandler extends TextWebSocketHandler {
         log.info("Text :  {}", payload);
         System.out.println(payload);
 
-        TextMessage textMessage=new TextMessage("채팅 참여를 시작합니다.");
-        session.sendMessage(textMessage);
+//        TextMessage textMessage=new TextMessage("채팅 참여를 시작합니다.");
+//        session.sendMessage(textMessage);
+
+        ChatMessage chatMessage=objectMapper.readValue(payload, ChatMessage.class);
+        ChatRoom chatRoom=chatService.findChatRoomById(chatMessage.getRoomId());
+        chatRoom.handleActions(session,chatMessage,chatService);
     }
 }
