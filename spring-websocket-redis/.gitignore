@@ -1,0 +1,23 @@
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+bin/
+logs/
+.DS_Store
+
+### AWS Redis Config ###
+application-server.yml
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

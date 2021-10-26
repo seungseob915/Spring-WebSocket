@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: server
+
+logging:
+  level:
+    org:
+      springframework: debug
+      web: debug
